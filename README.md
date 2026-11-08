@@ -10,7 +10,7 @@ A Companies list with a detail/create drawer on Next.js 16, backed by an in-memo
 
 ## Versions (installed)
 
-Next 16.4.5, React 19.3.0, TanStack Query 5.107.1, nuqs 2.10.2, zod 4.6.7, Tailwind 4.3.5, TypeScript 5.9.3, Vitest 5.1.0, Testing Library React 16.3.3.
+Next 16.4.5, React 19.3.0, TanStack Query 5.107.1, nuqs 2.10.2.
 
 ## Structure
 
@@ -51,13 +51,6 @@ Next 16.4.5, React 19.3.0, TanStack Query 5.107.1, nuqs 2.10.2, zod 4.6.7, Tailw
 - Playwright tests for focus return, real Escape and the 375 px layout
 - Server prefetch with `HydrationBoundary`
 
-## Left out
-
-- Sign-out and a route guard
-- Optimistic updates
-- A field-by-field merge view for conflicts
-- Delete and bulk actions
-
 ## Known limits
 
 - The in-memory store resets on restart and is not shared between server instances.
@@ -66,3 +59,7 @@ Next 16.4.5, React 19.3.0, TanStack Query 5.107.1, nuqs 2.10.2, zod 4.6.7, Tailw
 - The token sits in `localStorage`, readable by any script on the page. Fine for a fake sign-in, not for production.
 - The 422 component test uses a canned server response, because the client and server share one schema and the client blocks every invalid input first.
 - Components were tested in jsdom only, not in a real browser.
+- Sign-out and a route guard
+- Optimistic updates
+- A field-by-field merge view for conflicts
+- Delete and bulk actions
