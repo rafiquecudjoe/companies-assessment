@@ -8,7 +8,7 @@ import {
   getCompanyQueryKey,
   updateCompanyMutation,
 } from "@/lib/api/@tanstack/react-query.gen";
-import { fieldErrors } from "@/lib/api/errors";
+import { ApiError, fieldErrors } from "@/lib/api/errors";
 import { COMPANY_STATUSES, createCompanySchema } from "@/lib/api/schemas";
 import type { Company, CompanyStatus } from "@/lib/api/types.gen";
 import { useI18n } from "@/lib/i18n/i18n-provider";
@@ -20,11 +20,24 @@ type Props = {
   // Null means create mode.
   company: Company | null;
   onCreated?: () => void;
+  // Refetches the company; undefined when that fails.
+  onLoadLatest?: () => Promise<Company | undefined>;
 };
 
 const emptyDraft: Draft = { name: "", domain: "", status: "new" };
 
 const inputClass = "rounded-md border border-gray-300 px-3 py-2";
+
+function changedFields(
+  draft: Draft,
+  latest: Company,
+): Record<keyof Draft, boolean> {
+  return {
+    name: draft.name.trim() !== latest.name,
+    domain: (draft.domain.trim() || null) !== latest.domain,
+    status: draft.status !== latest.status,
+  };
+}
 
 function draftFrom(company: Company): Draft {
   return {
@@ -34,8 +47,8 @@ function draftFrom(company: Company): Draft {
   };
 }
 
-export function CompanyForm({ company, onCreated }: Props) {
-  const { t } = useI18n();
+export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
+  const { t, format } = useI18n();
   const queryClient = useQueryClient();
   const idPrefix = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -49,6 +62,8 @@ export function CompanyForm({ company, onCreated }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [failedSubmits, setFailedSubmits] = useState(0);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [conflict, setConflict] = useState(false);
+  const [latest, setLatest] = useState<Company | null>(null);
   const [saved, setSaved] = useState(false);
 
   // Only a failed save moves focus, so typing never steals it.
@@ -81,15 +96,32 @@ export function CompanyForm({ company, onCreated }: Props) {
   }
 
   function handleSaveError(error: Error) {
+    if (error instanceof ApiError && error.status === 409) {
+      setConflict(true);
+      return;
+    }
     const apiErrors = fieldErrors(error);
     if (Object.keys(apiErrors).length > 0) failWith(apiErrors);
     else setSaveFailed(true);
+  }
+
+  // The draft stays as typed; only the version we send and the hints change.
+  async function handleLoadLatest() {
+    const fresh = await onLoadLatest?.();
+    if (!fresh) {
+      setSaveFailed(true);
+      return;
+    }
+    setBaseVersion(fresh.version);
+    setLatest(fresh);
+    setConflict(false);
   }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setSaved(false);
     setSaveFailed(false);
+    setConflict(false);
     setErrors({});
 
     const parsed = createCompanySchema.safeParse(draft);
@@ -117,6 +149,7 @@ export function CompanyForm({ company, onCreated }: Props) {
           invalidateLists();
           setDraft(draftFrom(updated));
           setBaseVersion(updated.version);
+          setLatest(null);
           setSaved(true);
         },
         onError: handleSaveError,
@@ -125,6 +158,9 @@ export function CompanyForm({ company, onCreated }: Props) {
   }
 
   const isSaving = save.isPending || create.isPending;
+  const changed = latest ? changedFields(draft, latest) : null;
+  const latestHint = (field: keyof Draft, value: string) =>
+    changed?.[field] ? format(t.conflict.latestSaved, { value }) : undefined;
   const hasFieldErrors = Object.keys(errors).length > 0;
 
   return (
@@ -139,6 +175,20 @@ export function CompanyForm({ company, onCreated }: Props) {
           {t.drawer.validationSummary}
         </p>
       )}
+      {conflict && (
+        <div role="alert" className="flex flex-col items-start gap-2 text-sm">
+          <p>{t.conflict.message}</p>
+          {onLoadLatest && (
+            <button
+              type="button"
+              onClick={() => void handleLoadLatest()}
+              className="rounded-md border border-gray-300 px-3 py-1.5"
+            >
+              {t.conflict.loadLatest}
+            </button>
+          )}
+        </div>
+      )}
       {saveFailed && (
         <p role="alert" className="text-sm text-red-700">
           {t.drawer.saveError}
@@ -148,6 +198,7 @@ export function CompanyForm({ company, onCreated }: Props) {
         id={`${idPrefix}-name`}
         label={t.drawer.nameLabel}
         error={errors.name}
+        hint={latest ? latestHint("name", latest.name) : undefined}
       >
         {(controlProps) => (
           <input
@@ -162,6 +213,11 @@ export function CompanyForm({ company, onCreated }: Props) {
         id={`${idPrefix}-domain`}
         label={t.drawer.domainLabel}
         error={errors.domain}
+        hint={
+          latest
+            ? latestHint("domain", latest.domain ?? t.table.noDomain)
+            : undefined
+        }
       >
         {(controlProps) => (
           <input
@@ -176,6 +232,9 @@ export function CompanyForm({ company, onCreated }: Props) {
         id={`${idPrefix}-status`}
         label={t.drawer.statusLabel}
         error={errors.status}
+        hint={
+          latest ? latestHint("status", t.status[latest.status]) : undefined
+        }
       >
         {(controlProps) => (
           <select

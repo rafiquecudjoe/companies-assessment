@@ -28,5 +28,14 @@ export function EditCompany({ id }: { id: string }) {
       </div>
     );
   }
-  return <CompanyForm key={id} company={data} />;
+  return (
+    <CompanyForm
+      key={id}
+      company={data}
+      onLoadLatest={async () => {
+        const result = await refetch();
+        return result.isError ? undefined : result.data;
+      }}
+    />
+  );
 }
