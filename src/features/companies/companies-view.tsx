@@ -45,19 +45,19 @@ export function CompaniesView() {
     : "";
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between gap-4">
         <h1
           id={PAGE_HEADING_ID}
           tabIndex={-1}
-          className="text-2xl font-semibold"
+          className="text-2xl font-semibold tracking-tight"
         >
           {t.companies.title}
         </h1>
         <button
           type="button"
           onClick={() => openCompany(CREATE_ID)}
-          className="rounded-md bg-gray-900 px-3 py-2 text-white"
+          className="btn btn-primary"
         >
           {t.companies.newCompany}
         </button>

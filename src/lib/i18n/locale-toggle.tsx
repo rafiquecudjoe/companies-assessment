@@ -13,7 +13,7 @@ export function LocaleToggle() {
     <div
       role="group"
       aria-label={t.language}
-      className="flex gap-1"
+      className="flex overflow-hidden rounded-md border border-line-strong"
       aria-busy={isPending}
     >
       {LOCALES.map((option) => (
@@ -22,7 +22,7 @@ export function LocaleToggle() {
           type="button"
           aria-pressed={option === locale}
           onClick={() => startTransition(() => setLocale(option))}
-          className="rounded border border-zinc-400 px-2 py-1 text-sm uppercase aria-pressed:bg-zinc-900 aria-pressed:text-white"
+          className="px-2.5 py-1 text-xs font-medium uppercase text-muted hover:bg-surface-muted aria-pressed:bg-accent aria-pressed:text-accent-contrast aria-pressed:hover:bg-accent focus-visible:-outline-offset-2"
         >
           {option}
         </button>

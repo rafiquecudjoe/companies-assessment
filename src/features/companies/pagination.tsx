@@ -9,8 +9,7 @@ type Props = {
   onPage: (page: number) => void;
 };
 
-const buttonClass =
-  "rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50";
+const buttonClass = "btn";
 
 export function Pagination({ page, pageSize, total, onPage }: Props) {
   const { t, format } = useI18n();
@@ -21,9 +20,9 @@ export function Pagination({ page, pageSize, total, onPage }: Props) {
   return (
     <nav
       aria-label={t.pagination.label}
-      className="flex items-center justify-between"
+      className="flex items-center justify-between gap-4"
     >
-      <p className="text-sm">
+      <p className="text-sm text-muted">
         {format(t.pagination.summary, { from, to, total })}
       </p>
       <div className="flex gap-2">

@@ -58,16 +58,16 @@ export function CompanyDrawer({ companyId, onClose, onCreated }: Props) {
       ref={attachDialog}
       aria-labelledby={titleId}
       onClose={handleClose}
-      className="m-0 ml-auto h-dvh max-h-none w-full max-w-md bg-white p-6 text-gray-900 backdrop:bg-black/40"
+      className="m-0 ml-auto h-dvh max-h-none w-full max-w-md border-l border-line bg-surface p-6 text-foreground shadow-xl backdrop:bg-overlay"
     >
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <h2 id={titleId} className="text-xl font-semibold">
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <h2 id={titleId} className="text-lg font-semibold tracking-tight">
           {isCreate ? t.drawer.createTitle : t.drawer.editTitle}
         </h2>
         <button
           type="button"
           onClick={() => dialogRef.current?.close()}
-          className="rounded-md border border-gray-300 px-3 py-1.5"
+          className="btn"
         >
           {t.drawer.close}
         </button>

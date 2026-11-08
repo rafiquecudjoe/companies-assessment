@@ -21,7 +21,7 @@ export function FormField({ id, label, error, hint, children }: Props) {
     [error && errorId, hint && hintId].filter(Boolean).join(" ") || undefined;
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-sm font-medium">
         {label}
       </label>
@@ -31,12 +31,12 @@ export function FormField({ id, label, error, hint, children }: Props) {
         "aria-describedby": describedBy,
       })}
       {error && (
-        <p id={errorId} className="text-sm text-red-700">
+        <p id={errorId} className="text-sm text-danger">
           {error}
         </p>
       )}
       {hint && (
-        <p id={hintId} className="text-sm text-amber-800">
+        <p id={hintId} className="text-sm text-notice">
           {hint}
         </p>
       )}

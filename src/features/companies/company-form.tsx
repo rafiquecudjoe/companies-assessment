@@ -26,7 +26,7 @@ type Props = {
 
 const emptyDraft: Draft = { name: "", domain: "", status: "new" };
 
-const inputClass = "rounded-md border border-gray-300 px-3 py-2";
+const inputClass = "field";
 
 function changedFields(
   draft: Draft,
@@ -174,19 +174,22 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
       className="flex flex-col gap-4"
     >
       {hasFieldErrors && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-danger">
           {t.drawer.validationSummary}
         </p>
       )}
       {conflict && (
-        <div role="alert" className="flex flex-col items-start gap-2 text-sm">
+        <div
+          role="alert"
+          className="flex flex-col items-start gap-2 rounded-md border border-line-strong bg-surface-muted p-3 text-sm"
+        >
           <p>{t.conflict.message}</p>
           {onLoadLatest && (
             <button
               type="button"
               onClick={() => void handleLoadLatest()}
               disabled={isLoadingLatest}
-              className="rounded-md border border-gray-300 px-3 py-1.5"
+              className="btn"
             >
               {t.conflict.loadLatest}
             </button>
@@ -194,7 +197,7 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
         </div>
       )}
       {saveFailed && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-danger">
           {t.drawer.saveError}
         </p>
       )}
@@ -260,11 +263,11 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
       <button
         type="submit"
         disabled={isSaving || isLoadingLatest}
-        className="rounded-md bg-gray-900 px-3 py-2 text-white disabled:opacity-60"
+        className="btn btn-primary"
       >
         {isSaving ? t.drawer.saving : t.drawer.save}
       </button>
-      <p role="status" className="text-sm">
+      <p role="status" className="min-h-5 text-sm text-muted">
         {saved ? t.drawer.saved : ""}
       </p>
     </form>

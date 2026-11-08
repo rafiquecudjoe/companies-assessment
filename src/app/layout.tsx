@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <I18nProvider locale={locale} dictionary={getDictionary(locale)}>
-          <header className="flex justify-end p-4">
+          <header className="flex justify-end border-b border-line bg-surface px-4 py-2">
             <LocaleToggle />
           </header>
           <Providers>{children}</Providers>

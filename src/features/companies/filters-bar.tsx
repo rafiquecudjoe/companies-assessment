@@ -11,23 +11,22 @@ type Props = {
   onStatus: (status: CompanyStatus | null) => void;
 };
 
-const fieldClass =
-  "rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm";
+const fieldClass = "field";
 
 export function FiltersBar({ q, status, onSearch, onStatus }: Props) {
   const { t } = useI18n();
   return (
-    <div className="flex flex-wrap items-end gap-4">
-      <label className="flex flex-col gap-1 text-sm">
+    <div className="flex flex-wrap items-end gap-3">
+      <label className="flex w-full flex-col gap-1.5 text-sm font-medium sm:w-auto">
         {t.companies.searchLabel}
         <input
           type="search"
           value={q}
           onChange={(event) => onSearch(event.target.value)}
-          className={`${fieldClass} w-64`}
+          className={`${fieldClass} w-full sm:w-64 font-normal`}
         />
       </label>
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="flex w-full flex-col gap-1.5 text-sm font-medium sm:w-auto">
         {t.companies.statusFilterLabel}
         <select
           value={status ?? ""}
@@ -36,7 +35,7 @@ export function FiltersBar({ q, status, onSearch, onStatus }: Props) {
               event.target.value ? (event.target.value as CompanyStatus) : null,
             )
           }
-          className={fieldClass}
+          className={`${fieldClass} font-normal`}
         >
           <option value="">{t.companies.allStatuses}</option>
           {COMPANY_STATUSES.map((value) => (

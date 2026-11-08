@@ -10,18 +10,19 @@ export function EditCompany({ id }: { id: string }) {
   const { t } = useI18n();
   const { data, error, isPending, refetch } = useQuery(getCompanyOptions(id));
 
-  if (isPending) return <p role="status">{t.drawer.loading}</p>;
+  if (isPending)
+    return (
+      <p role="status" className="text-muted">
+        {t.drawer.loading}
+      </p>
+    );
   if (error) {
     const missing = error instanceof ApiError && error.status === 404;
     return (
       <div role="alert" className="flex flex-col items-start gap-2">
         <p>{missing ? t.drawer.notFound : t.drawer.loadError}</p>
         {!missing && (
-          <button
-            type="button"
-            onClick={() => void refetch()}
-            className="rounded-md border border-gray-300 px-3 py-1.5"
-          >
+          <button type="button" onClick={() => void refetch()} className="btn">
             {t.companies.retry}
           </button>
         )}

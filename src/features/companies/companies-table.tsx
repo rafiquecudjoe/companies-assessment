@@ -16,7 +16,17 @@ type Props = {
 
 const COLUMN_COUNT = 4;
 const SKELETON_ROWS = 5;
-const cellClass = "px-3 py-2 text-left";
+const cellClass = "px-4 py-2.5 text-left";
+const headerClass =
+  "px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-muted";
+
+const statusTone = {
+  new: "bg-surface-muted text-muted",
+  researching: "bg-surface-muted text-foreground",
+  contacted: "bg-surface-muted text-foreground",
+  qualified: "bg-surface-muted text-accent",
+  rejected: "bg-surface-muted text-danger",
+} as const;
 
 function ariaSort(sort: CompanySort, ascending: CompanySort) {
   if (sort === ascending) return "ascending";
@@ -27,7 +37,10 @@ function ariaSort(sort: CompanySort, ascending: CompanySort) {
 function MessageRow({ children }: { children: React.ReactNode }) {
   return (
     <tr>
-      <td colSpan={COLUMN_COUNT} className="px-3 py-8 text-center text-sm">
+      <td
+        colSpan={COLUMN_COUNT}
+        className="px-4 py-10 text-left text-muted sm:text-center"
+      >
         {children}
       </td>
     </tr>
@@ -51,11 +64,11 @@ export function CompaniesTable({
     const next = sort === ascending ? descending : ascending;
     const direction = ariaSort(sort, ascending);
     return (
-      <th scope="col" aria-sort={direction} className={cellClass}>
+      <th scope="col" aria-sort={direction} className={headerClass}>
         <button
           type="button"
           onClick={() => onSort(next)}
-          className="font-semibold underline-offset-2 hover:underline"
+          className="-mx-1 rounded px-1 text-left uppercase hover:text-foreground"
         >
           {label}
           <span aria-hidden="true" className="ml-1">
@@ -75,11 +88,7 @@ export function CompaniesTable({
       return (
         <MessageRow>
           <p role="alert">{t.companies.loadError}</p>
-          <button
-            type="button"
-            onClick={onRetry}
-            className="mt-2 rounded-md border border-gray-300 px-3 py-1.5"
-          >
+          <button type="button" onClick={onRetry} className="btn mt-3">
             {t.companies.retry}
           </button>
         </MessageRow>
@@ -90,7 +99,7 @@ export function CompaniesTable({
         <tr key={row} aria-hidden="true">
           {Array.from({ length: COLUMN_COUNT }, (_, cell) => (
             <td key={cell} className={cellClass}>
-              <div className="h-4 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 animate-pulse rounded bg-surface-muted" />
             </td>
           ))}
         </tr>
@@ -101,7 +110,7 @@ export function CompaniesTable({
       <tr
         key={company.id}
         onClick={() => onOpen(company.id)}
-        className="cursor-pointer border-t border-gray-200 hover:bg-gray-50"
+        className="cursor-pointer border-t border-line hover:bg-surface-muted"
       >
         <td className={cellClass}>
           <button
@@ -110,29 +119,39 @@ export function CompaniesTable({
               event.stopPropagation();
               onOpen(company.id);
             }}
-            className="font-medium underline-offset-2 hover:underline"
+            className="rounded text-left font-medium underline-offset-2 hover:underline"
           >
             {company.name}
           </button>
         </td>
-        <td className={cellClass}>{company.domain ?? t.table.noDomain}</td>
-        <td className={cellClass}>{t.status[company.status]}</td>
-        <td className={cellClass}>{formatDate(company.created_at)}</td>
+        <td className={`${cellClass} text-muted`}>
+          {company.domain ?? t.table.noDomain}
+        </td>
+        <td className={cellClass}>
+          <span
+            className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${statusTone[company.status]}`}
+          >
+            {t.status[company.status]}
+          </span>
+        </td>
+        <td className={`${cellClass} whitespace-nowrap text-muted`}>
+          {formatDate(company.created_at)}
+        </td>
       </tr>
     ));
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm" aria-busy={isFetching}>
+    <div className="overflow-x-auto rounded-lg border border-line bg-surface">
+      <table className="w-full min-w-[36rem] text-sm" aria-busy={isFetching}>
         <caption className="sr-only">{t.companies.title}</caption>
-        <thead>
+        <thead className="bg-surface-muted">
           <tr>
             {sortHeader(t.table.name, "name")}
-            <th scope="col" className={cellClass}>
+            <th scope="col" className={headerClass}>
               {t.table.domain}
             </th>
-            <th scope="col" className={cellClass}>
+            <th scope="col" className={headerClass}>
               {t.table.status}
             </th>
             {sortHeader(t.table.created, "created_at")}
