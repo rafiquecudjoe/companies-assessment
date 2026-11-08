@@ -59,7 +59,10 @@ Next 16.4.5, React 19.3.0, TanStack Query 5.107.1, nuqs 2.10.2.
 - The token sits in `localStorage`, readable by any script on the page. Fine for a fake sign-in, not for production.
 - The 422 component test uses a canned server response, because the client and server share one schema and the client blocks every invalid input first.
 - Components were tested in jsdom only, not in a real browser.
-- Sign-out and a route guard
-- Optimistic updates
-- A field-by-field merge view for conflicts
-- Delete and bulk actions
+
+## Left out on purpose
+
+- Sign-out and a route guard: the brief only asks that a 401 sends you to sign-in, and the API's 401 already does that.
+- Optimistic updates: with version conflicts, showing a change before the server accepts it would mislead.
+- A field-by-field merge view for conflicts: "Latest saved" hints under each changed field are enough to decide.
+- Delete and bulk actions: not asked for.
