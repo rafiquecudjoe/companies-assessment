@@ -55,7 +55,9 @@ export function updateCompany(
     updated_at: new Date().toISOString(),
   };
   const list = companies();
-  list[list.indexOf(existing)] = updated;
+  const index = list.findIndex((company) => company.id === existing.id);
+  if (index === -1) throw new Error(`Company ${existing.id} not found`);
+  list[index] = updated;
   return updated;
 }
 

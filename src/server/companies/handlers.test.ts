@@ -59,6 +59,20 @@ describe("companies API", () => {
     ).toBe(409);
   });
 
+  it("lets only one of two simultaneous patches with the same version win", async () => {
+    const statuses = (
+      await Promise.all(
+        ["First", "Second"].map((name) =>
+          send("/company-01", "PATCH", { if_version: 1, name }),
+        ),
+      )
+    ).map((response) => response.status);
+    expect(statuses.sort()).toEqual([200, 409]);
+    expect(await (await send("/company-01")).json()).toMatchObject({
+      version: 2,
+    });
+  });
+
   it("checks 404 before 422 and 422 before 409", async () => {
     expect((await send("/missing", "PATCH", { name: "" })).status).toBe(404);
     expect(
