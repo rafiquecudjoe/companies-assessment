@@ -35,7 +35,7 @@ Next 16.4.5, React 19.3.0, TanStack Query 5.107.1, nuqs 2.10.2.
 ## 409 flow
 
 1. The form keeps the draft and the version it opened with, and sends it as `if_version`.
-2. On 409 an alert says someone else changed the company and the input is kept.
+2. On 409 an alert says someone else changed the company and the input is kept. The lists are invalidated, since their rows are stale.
 3. "Load latest" refetches the company, takes its version, and shows "Latest saved: X" under each field that differs. The draft is untouched.
 4. Save again. On success the detail cache is set from the response and the lists are invalidated.
 

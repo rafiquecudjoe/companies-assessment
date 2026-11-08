@@ -3,10 +3,10 @@
 ## 1. Server or Client Component
 
 - Default to Server. Switch to Client only for state, effects, event handlers or browser APIs.
-- Server example: the page shell and the heading (`/companies/page.tsx`), which add no component JavaScript to the bundle.
+- Server example: the page (`/companies/page.tsx`) renders only the `<main>` wrapper, so it adds no component JavaScript to the bundle.
 - Client example: the filterable table and drawer. They read URL state, handle clicks, hold form drafts and use TanStack Query.
-- The boundary sits at the page: the server page renders the shell and heading and passes serialisable props into one client view. The table, filters and drawer share URL state and the query cache, so splitting them would mean lifting that state through props.
-- Props crossing the boundary must be serialisable. Here the locale and dictionary cross as plain data.
+- The boundary sits at the page: the server page renders one `Suspense` around one client `CompaniesView`, with no props. The table, filters and drawer share URL state and the query cache, so splitting them would mean lifting that state through props.
+- Props crossing the boundary must be serialisable. Here the dictionary crosses as plain data through `I18nProvider` in the layout, and the client view reads URL state itself.
 
 ## 2. Fetching in a Server Component
 
@@ -19,7 +19,7 @@
 
 - The user keeps what they typed. An alert says someone else changed the record, and offers "Load latest".
 - Load latest refetches, takes the new version for the next `if_version`, and shows "Latest saved: X" under each field that differs. It does not overwrite the draft, because silently discarding input is worse than a second save.
-- Cache: on success I set the detail query from the PATCH response and invalidate the list queries. On 409 I do not invalidate the lists. The refetch updates only the detail entry.
+- Cache: on success I set the detail query from the PATCH response and invalidate the list queries. On 409 I also invalidate the lists, because someone else changed the record and the rows are stale. The detail entry is refetched when Load latest is pressed.
 - No optimistic update. With versioned writes, a rollback would have to handle this very case.
 
 ## 4. Filter, sort and page state
@@ -43,7 +43,7 @@
 
 ## 7. Dutch and English
 
-- The locale is a cookie, read on the server in the root layout. It sets `<html lang>` and picks one typed dictionary, which is passed to a context provider. Server and client components both read from it, and only the active language is shipped.
+- The locale is a cookie, read on the server in the root layout. It sets `<html lang>` and picks one typed dictionary, which is passed to `I18nProvider`, a client context. Server code would call `getDictionary(locale)` directly. Client components read the context, and only the active language is shipped.
 - Dates and numbers use `Intl` with the same locale, never the browser default.
 - The toggle is a Server Action that sets the cookie, and Next re-renders the page. A library such as next-intl would be the next step with more strings, plurals or locale-based URLs. For a handful of strings it was not worth the dependency.
 
