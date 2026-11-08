@@ -4,7 +4,6 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { listCompaniesOptions } from "@/lib/api/@tanstack/react-query.gen";
 import { LIST_DEFAULTS } from "@/lib/api/schemas";
-import { interpolate } from "@/lib/i18n/format";
 import { useI18n } from "@/lib/i18n/i18n-provider";
 import { CompaniesTable } from "./companies-table";
 import { CREATE_ID, CompanyDrawer, PAGE_HEADING_ID } from "./company-drawer";
@@ -39,12 +38,6 @@ export function CompaniesView() {
     params.openCompany(id);
   }
 
-  const from = data && data.total > 0 ? data.offset + 1 : 0;
-  const to = data ? data.offset + data.items.length : 0;
-  const summary = data
-    ? interpolate(t.pagination.summary, { from, to, total: data.total })
-    : "";
-
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between gap-4">
@@ -69,9 +62,6 @@ export function CompaniesView() {
         onSearch={params.setSearch}
         onStatus={params.setStatus}
       />
-      <p role="status" className="sr-only">
-        {isFetching ? "" : summary}
-      </p>
       <CompaniesTable
         items={data?.items}
         isPending={isPending}

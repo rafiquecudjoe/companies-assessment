@@ -23,7 +23,7 @@ export function Pagination({ page, pageSize, total, onPage }: Props) {
       aria-label={t.pagination.label}
       className="flex items-center justify-between gap-4"
     >
-      <p className="text-sm tabular-nums text-muted">
+      <p role="status" className="text-sm tabular-nums text-muted">
         {interpolate(t.pagination.summary, { from, to, total })}
       </p>
       <div className="flex gap-2">
