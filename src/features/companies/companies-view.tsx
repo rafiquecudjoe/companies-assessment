@@ -1,13 +1,13 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { LIST_DEFAULTS } from "@/lib/api/schemas";
+import { useState } from "react";
 import { listCompaniesOptions } from "@/lib/api/@tanstack/react-query.gen";
+import { LIST_DEFAULTS } from "@/lib/api/schemas";
 import { interpolate } from "@/lib/i18n/format";
 import { useI18n } from "@/lib/i18n/i18n-provider";
-import { CREATE_ID, CompanyDrawer, PAGE_HEADING_ID } from "./company-drawer";
-import { useState } from "react";
 import { CompaniesTable } from "./companies-table";
+import { CREATE_ID, CompanyDrawer, PAGE_HEADING_ID } from "./company-drawer";
 import { FiltersBar } from "./filters-bar";
 import { Pagination } from "./pagination";
 import { useCompaniesParams } from "./search-params";
