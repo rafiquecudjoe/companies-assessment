@@ -14,8 +14,10 @@ const buttonClass =
 
 export function Pagination({ page, pageSize, total, onPage }: Props) {
   const { t, format } = useI18n();
-  const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
-  const to = Math.min(page * pageSize, total);
+  const offset = (page - 1) * pageSize;
+  // A hand-edited page past the end shows "0 to 0" instead of "1961 to 40".
+  const from = offset >= total ? 0 : offset + 1;
+  const to = from === 0 ? 0 : Math.min(page * pageSize, total);
   return (
     <nav
       aria-label={t.pagination.label}
@@ -36,7 +38,7 @@ export function Pagination({ page, pageSize, total, onPage }: Props) {
         <button
           type="button"
           className={buttonClass}
-          disabled={to >= total}
+          disabled={page * pageSize >= total}
           onClick={() => onPage(page + 1)}
         >
           {t.pagination.next}

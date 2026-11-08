@@ -49,18 +49,22 @@ export function CompaniesTable({
   function sortHeader(label: string, ascending: "name" | "created_at") {
     const descending = `-${ascending}` as const;
     const next = sort === ascending ? descending : ascending;
+    const direction = ariaSort(sort, ascending);
     return (
-      <th
-        scope="col"
-        aria-sort={ariaSort(sort, ascending)}
-        className={cellClass}
-      >
+      <th scope="col" aria-sort={direction} className={cellClass}>
         <button
           type="button"
           onClick={() => onSort(next)}
           className="font-semibold underline-offset-2 hover:underline"
         >
           {label}
+          <span aria-hidden="true" className="ml-1">
+            {direction === "ascending"
+              ? "▲"
+              : direction === "descending"
+                ? "▼"
+                : ""}
+          </span>
         </button>
       </th>
     );

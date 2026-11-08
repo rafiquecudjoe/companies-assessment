@@ -65,6 +65,7 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
   const [conflict, setConflict] = useState(false);
   const [latest, setLatest] = useState<Company | null>(null);
   const [saved, setSaved] = useState(false);
+  const [isLoadingLatest, setIsLoadingLatest] = useState(false);
 
   // Only a failed save moves focus, so typing never steals it.
   useEffect(() => {
@@ -107,7 +108,9 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
 
   // The draft stays as typed; only the version we send and the hints change.
   async function handleLoadLatest() {
+    setIsLoadingLatest(true);
     const fresh = await onLoadLatest?.();
+    setIsLoadingLatest(false);
     if (!fresh) {
       setSaveFailed(true);
       return;
@@ -182,6 +185,7 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
             <button
               type="button"
               onClick={() => void handleLoadLatest()}
+              disabled={isLoadingLatest}
               className="rounded-md border border-gray-300 px-3 py-1.5"
             >
               {t.conflict.loadLatest}
@@ -255,7 +259,7 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
       </FormField>
       <button
         type="submit"
-        disabled={isSaving}
+        disabled={isSaving || isLoadingLatest}
         className="rounded-md bg-gray-900 px-3 py-2 text-white disabled:opacity-60"
       >
         {isSaving ? t.drawer.saving : t.drawer.save}
