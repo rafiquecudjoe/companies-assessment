@@ -181,7 +181,7 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
       {conflict && (
         <div
           role="alert"
-          className="flex flex-col items-start gap-2 rounded-md border border-line-strong bg-surface-muted p-3 text-sm"
+          className="flex flex-col items-start gap-2 rounded-md border border-notice bg-surface-muted p-3 text-sm"
         >
           <p>{t.conflict.message}</p>
           {onLoadLatest && (
@@ -267,7 +267,7 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
       >
         {isSaving ? t.drawer.saving : t.drawer.save}
       </button>
-      <p role="status" className="min-h-5 text-sm text-muted">
+      <p role="status" className="min-h-5 text-sm font-medium">
         {saved ? t.drawer.saved : ""}
       </p>
     </form>

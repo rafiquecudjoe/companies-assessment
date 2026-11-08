@@ -52,6 +52,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  color-scheme: light dark;
+  accent-color: var(--accent);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -79,6 +84,9 @@ body {
   font-weight: 500;
   line-height: 1.25rem;
   transition: background-color 120ms ease;
+  @media (pointer: coarse) {
+    min-height: 2.75rem;
+  }
   &:hover:not(:disabled) {
     background: var(--surface-muted);
   }
@@ -105,6 +113,9 @@ body {
   padding: 0.4375rem 0.75rem;
   font-size: 0.9375rem;
   line-height: 1.25rem;
+  @media (pointer: coarse) {
+    min-height: 2.75rem;
+  }
   &:focus-visible {
     border-color: var(--accent);
     outline-offset: 0;

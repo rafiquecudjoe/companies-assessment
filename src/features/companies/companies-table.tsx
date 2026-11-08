@@ -68,7 +68,7 @@ export function CompaniesTable({
         <button
           type="button"
           onClick={() => onSort(next)}
-          className="-mx-1 rounded px-1 text-left uppercase hover:text-foreground"
+          className="-mx-1 -my-1.5 rounded px-1 py-1.5 text-left uppercase hover:text-foreground"
         >
           {label}
           <span aria-hidden="true" className="ml-1">
@@ -87,7 +87,9 @@ export function CompaniesTable({
     if (isError) {
       return (
         <MessageRow>
-          <p role="alert">{t.companies.loadError}</p>
+          <p role="alert" className="text-danger">
+            {t.companies.loadError}
+          </p>
           <button type="button" onClick={onRetry} className="btn mt-3">
             {t.companies.retry}
           </button>
@@ -99,7 +101,7 @@ export function CompaniesTable({
         <tr key={row} aria-hidden="true">
           {Array.from({ length: COLUMN_COUNT }, (_, cell) => (
             <td key={cell} className={cellClass}>
-              <div className="h-4 animate-pulse rounded bg-surface-muted" />
+              <div className="h-4 animate-pulse rounded bg-surface-muted motion-reduce:animate-none" />
             </td>
           ))}
         </tr>
@@ -134,7 +136,7 @@ export function CompaniesTable({
             {t.status[company.status]}
           </span>
         </td>
-        <td className={`${cellClass} whitespace-nowrap text-muted`}>
+        <td className={`${cellClass} whitespace-nowrap tabular-nums text-muted`}>
           {formatDate(company.created_at)}
         </td>
       </tr>
