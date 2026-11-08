@@ -42,13 +42,3 @@ export type UpdateCompanyBody = {
   domain?: string | null;
   status?: CompanyStatus;
 };
-
-export type ValidationErrorItem = {
-  loc: (string | number)[];
-  msg: string;
-  type: string;
-};
-
-export type HttpValidationError = { detail: ValidationErrorItem[] };
-
-export type HttpError = { detail: string };
