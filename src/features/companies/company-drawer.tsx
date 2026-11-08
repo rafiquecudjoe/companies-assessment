@@ -2,16 +2,20 @@
 
 import { useCallback, useId, useRef } from "react";
 import { useI18n } from "@/lib/i18n/i18n-provider";
+import { CompanyForm } from "./company-form";
 import { EditCompany } from "./edit-company";
 
 export const PAGE_HEADING_ID = "companies-heading";
 
+export const CREATE_ID = "new";
+
 type Props = {
   companyId: string | null;
   onClose: () => void;
+  onCreated: () => void;
 };
 
-export function CompanyDrawer({ companyId, onClose }: Props) {
+export function CompanyDrawer({ companyId, onClose, onCreated }: Props) {
   const { t } = useI18n();
   const titleId = useId();
   const dialogRef = useRef<HTMLDialogElement | null>(null);
@@ -30,7 +34,13 @@ export function CompanyDrawer({ companyId, onClose }: Props) {
     onClose();
   }
 
+  function handleCreated() {
+    onCreated();
+    dialogRef.current?.close();
+  }
+
   if (!companyId) return null;
+  const isCreate = companyId === CREATE_ID;
 
   return (
     <dialog
@@ -41,7 +51,7 @@ export function CompanyDrawer({ companyId, onClose }: Props) {
     >
       <div className="mb-4 flex items-center justify-between gap-4">
         <h2 id={titleId} className="text-xl font-semibold">
-          {t.drawer.editTitle}
+          {isCreate ? t.drawer.createTitle : t.drawer.editTitle}
         </h2>
         <button
           type="button"
@@ -51,7 +61,11 @@ export function CompanyDrawer({ companyId, onClose }: Props) {
           {t.drawer.close}
         </button>
       </div>
-      <EditCompany id={companyId} />
+      {isCreate ? (
+        <CompanyForm company={null} onCreated={handleCreated} />
+      ) : (
+        <EditCompany id={companyId} />
+      )}
     </dialog>
   );
 }

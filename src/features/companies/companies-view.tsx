@@ -4,7 +4,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { LIST_DEFAULTS } from "@/lib/api/schemas";
 import { listCompaniesOptions } from "@/lib/api/@tanstack/react-query.gen";
 import { useI18n } from "@/lib/i18n/i18n-provider";
-import { CompanyDrawer, PAGE_HEADING_ID } from "./company-drawer";
+import { CREATE_ID, CompanyDrawer, PAGE_HEADING_ID } from "./company-drawer";
+import { useState } from "react";
 import { CompaniesTable } from "./companies-table";
 import { FiltersBar } from "./filters-bar";
 import { Pagination } from "./pagination";
@@ -17,6 +18,7 @@ const PAGE_SIZE = LIST_DEFAULTS.limit;
 export function CompaniesView() {
   const { t, format } = useI18n();
   const params = useCompaniesParams();
+  const [announcement, setAnnouncement] = useState("");
   const debouncedQ = useDebouncedValue(params.q, SEARCH_DEBOUNCE_MS);
 
   const { data, isPending, isError, isFetching, refetch } = useQuery({
@@ -30,6 +32,12 @@ export function CompaniesView() {
     placeholderData: keepPreviousData,
   });
 
+  function openCompany(id: string) {
+    // Clearing lets the same message be announced again next time.
+    setAnnouncement("");
+    params.openCompany(id);
+  }
+
   const from = data && data.total > 0 ? data.offset + 1 : 0;
   const to = data ? data.offset + data.items.length : 0;
   const summary = data
@@ -38,9 +46,22 @@ export function CompaniesView() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 id={PAGE_HEADING_ID} tabIndex={-1} className="text-2xl font-semibold">
-        {t.companies.title}
-      </h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1
+          id={PAGE_HEADING_ID}
+          tabIndex={-1}
+          className="text-2xl font-semibold"
+        >
+          {t.companies.title}
+        </h1>
+        <button
+          type="button"
+          onClick={() => openCompany(CREATE_ID)}
+          className="rounded-md bg-gray-900 px-3 py-2 text-white"
+        >
+          {t.companies.newCompany}
+        </button>
+      </div>
       <FiltersBar
         q={params.q}
         status={params.status}
@@ -57,7 +78,7 @@ export function CompaniesView() {
         isFetching={isFetching}
         sort={params.sort}
         onSort={params.setSort}
-        onOpen={params.openCompany}
+        onOpen={openCompany}
         onRetry={() => void refetch()}
       />
       {data && (
@@ -68,7 +89,14 @@ export function CompaniesView() {
           onPage={params.setPage}
         />
       )}
-      <CompanyDrawer companyId={params.company} onClose={params.closeCompany} />
+      <p role="status" className="sr-only">
+        {announcement}
+      </p>
+      <CompanyDrawer
+        companyId={params.company}
+        onClose={params.closeCompany}
+        onCreated={() => setAnnouncement(t.drawer.created)}
+      />
     </div>
   );
 }

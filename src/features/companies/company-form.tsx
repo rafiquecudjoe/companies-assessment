@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import {
   companyListsQueryKey,
+  createCompanyMutation,
   getCompanyQueryKey,
   updateCompanyMutation,
 } from "@/lib/api/@tanstack/react-query.gen";
@@ -15,7 +16,13 @@ import { FormField } from "./form-field";
 
 type Draft = { name: string; domain: string; status: CompanyStatus };
 
-type Props = { company: Company };
+type Props = {
+  // Null means create mode.
+  company: Company | null;
+  onCreated?: () => void;
+};
+
+const emptyDraft: Draft = { name: "", domain: "", status: "new" };
 
 const inputClass = "rounded-md border border-gray-300 px-3 py-2";
 
@@ -27,15 +34,18 @@ function draftFrom(company: Company): Draft {
   };
 }
 
-export function CompanyForm({ company }: Props) {
+export function CompanyForm({ company, onCreated }: Props) {
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const idPrefix = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const save = useMutation(updateCompanyMutation());
+  const create = useMutation(createCompanyMutation());
 
-  const [draft, setDraft] = useState(() => draftFrom(company));
-  const [baseVersion, setBaseVersion] = useState(company.version);
+  const [draft, setDraft] = useState(() =>
+    company ? draftFrom(company) : emptyDraft,
+  );
+  const [baseVersion, setBaseVersion] = useState(company?.version ?? 0);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [failedSubmits, setFailedSubmits] = useState(0);
   const [saveFailed, setSaveFailed] = useState(false);
@@ -66,6 +76,16 @@ export function CompanyForm({ company }: Props) {
     setFailedSubmits((count) => count + 1);
   }
 
+  function invalidateLists() {
+    void queryClient.invalidateQueries({ queryKey: companyListsQueryKey });
+  }
+
+  function handleSaveError(error: Error) {
+    const apiErrors = fieldErrors(error);
+    if (Object.keys(apiErrors).length > 0) failWith(apiErrors);
+    else setSaveFailed(true);
+  }
+
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setSaved(false);
@@ -78,27 +98,33 @@ export function CompanyForm({ company }: Props) {
       return;
     }
 
+    if (!company) {
+      create.mutate(parsed.data, {
+        onSuccess: () => {
+          invalidateLists();
+          onCreated?.();
+        },
+        onError: handleSaveError,
+      });
+      return;
+    }
+
     save.mutate(
       { id: company.id, body: { if_version: baseVersion, ...parsed.data } },
       {
         onSuccess: (updated) => {
           queryClient.setQueryData(getCompanyQueryKey(updated.id), updated);
-          void queryClient.invalidateQueries({
-            queryKey: companyListsQueryKey,
-          });
+          invalidateLists();
           setDraft(draftFrom(updated));
           setBaseVersion(updated.version);
           setSaved(true);
         },
-        onError: (error) => {
-          const apiErrors = fieldErrors(error);
-          if (Object.keys(apiErrors).length > 0) failWith(apiErrors);
-          else setSaveFailed(true);
-        },
+        onError: handleSaveError,
       },
     );
   }
 
+  const isSaving = save.isPending || create.isPending;
   const hasFieldErrors = Object.keys(errors).length > 0;
 
   return (
@@ -170,10 +196,10 @@ export function CompanyForm({ company }: Props) {
       </FormField>
       <button
         type="submit"
-        disabled={save.isPending}
+        disabled={isSaving}
         className="rounded-md bg-gray-900 px-3 py-2 text-white disabled:opacity-60"
       >
-        {save.isPending ? t.drawer.saving : t.drawer.save}
+        {isSaving ? t.drawer.saving : t.drawer.save}
       </button>
       <p role="status" className="text-sm">
         {saved ? t.drawer.saved : ""}
