@@ -1,7 +1,11 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { findCompany, resetCompanies, updateCompany } from "@/server/companies/store";
+import {
+  findCompany,
+  resetCompanies,
+  updateCompany,
+} from "@/server/companies/store";
 import { apiFetch, stubApiFetch } from "@/test/api-fetch";
 import { renderCompanies } from "@/test/render-companies";
 
@@ -10,7 +14,9 @@ const COMPANY_ID = "company-02";
 async function openDrawer() {
   renderCompanies(`?company=${COMPANY_ID}`);
   const name = await screen.findByLabelText("Name");
-  await vi.waitFor(() => expect(name).toHaveValue(findCompany(COMPANY_ID)?.name));
+  await vi.waitFor(() =>
+    expect(name).toHaveValue(findCompany(COMPANY_ID)?.name),
+  );
   return name;
 }
 
@@ -37,7 +43,9 @@ describe("company drawer", () => {
     await userEvent.type(name, "Mine");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await screen.findByText(/Someone else changed this company/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Someone else changed this company/),
+    ).toBeInTheDocument();
     expect(name).toHaveValue("Mine");
 
     await userEvent.click(screen.getByRole("button", { name: "Load latest" }));
@@ -47,6 +55,16 @@ describe("company drawer", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(await screen.findByText("Company saved.")).toBeInTheDocument();
     expect(findCompany(COMPANY_ID)).toMatchObject({ name: "Mine", version: 3 });
+  });
+
+  it("closes the dialog when the drawer is removed without close()", async () => {
+    const closeSpy = vi.spyOn(HTMLDialogElement.prototype, "close");
+    const { unmount } = renderCompanies(`?company=${COMPANY_ID}`);
+    expect((await screen.findByRole("dialog")).hasAttribute("open")).toBe(true);
+
+    closeSpy.mockClear();
+    unmount();
+    expect(closeSpy).toHaveBeenCalledTimes(1);
   });
 
   it("shows a client error and sends no request for an empty name", async () => {
@@ -68,7 +86,15 @@ describe("company drawer", () => {
       init?.method === "PATCH"
         ? Promise.resolve(
             Response.json(
-              { detail: [{ loc: ["body", "name"], msg: "Name already taken", type: "value_error" }] },
+              {
+                detail: [
+                  {
+                    loc: ["body", "name"],
+                    msg: "Name already taken",
+                    type: "value_error",
+                  },
+                ],
+              },
               { status: 422 },
             ),
           )

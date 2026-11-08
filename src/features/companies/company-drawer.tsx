@@ -9,6 +9,13 @@ export const PAGE_HEADING_ID = "companies-heading";
 
 export const CREATE_ID = "new";
 
+function focusHeadingIfNothingFocused() {
+  // Opened from a shared link, nothing was focused before, so land on the heading.
+  if (document.activeElement === document.body) {
+    document.getElementById(PAGE_HEADING_ID)?.focus();
+  }
+}
+
 type Props = {
   companyId: string | null;
   onClose: () => void;
@@ -24,13 +31,15 @@ export function CompanyDrawer({ companyId, onClose, onCreated }: Props) {
   const attachDialog = useCallback((dialog: HTMLDialogElement | null) => {
     dialogRef.current = dialog;
     if (dialog && !dialog.open) dialog.showModal();
+    // Removal through the URL (Back) skips close(), so close here to restore focus.
+    return () => {
+      if (dialog?.open) dialog.close();
+      focusHeadingIfNothingFocused();
+    };
   }, []);
 
   function handleClose() {
-    // Opened from a shared link, nothing was focused before, so land on the heading.
-    if (document.activeElement === document.body) {
-      document.getElementById(PAGE_HEADING_ID)?.focus();
-    }
+    focusHeadingIfNothingFocused();
     onClose();
   }
 

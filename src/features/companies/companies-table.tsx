@@ -70,7 +70,7 @@ export function CompaniesTable({
     if (isError) {
       return (
         <MessageRow>
-          <p>{t.companies.loadError}</p>
+          <p role="alert">{t.companies.loadError}</p>
           <button
             type="button"
             onClick={onRetry}
