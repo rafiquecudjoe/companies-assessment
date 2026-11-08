@@ -3,9 +3,9 @@
 ## 1. Server or Client Component
 
 - Default to Server. Switch to Client only for state, effects, event handlers or browser APIs.
-- Server example: the page shell and the heading (`/companies/page.tsx`), which send no JavaScript.
+- Server example: the page shell and the heading (`/companies/page.tsx`), which add no component JavaScript to the bundle.
 - Client example: the filterable table and drawer. They read URL state, handle clicks, hold form drafts and use TanStack Query.
-- The boundary sits at the page: server shell, one client view below it. Pushing `"use client"` deeper would only save a few kilobytes, while splitting the view would force it to pass state through props.
+- The boundary sits at the page: the server page renders the shell and heading and passes serialisable props into one client view. The table, filters and drawer share URL state and the query cache, so splitting them would mean lifting that state through props.
 - Props crossing the boundary must be serialisable. Here the locale and dictionary cross as plain data.
 
 ## 2. Fetching in a Server Component
