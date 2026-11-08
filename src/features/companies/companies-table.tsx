@@ -119,21 +119,23 @@ export function CompaniesTable({
   }
 
   return (
-    <table className="w-full text-sm" aria-busy={isFetching}>
-      <caption className="sr-only">{t.companies.title}</caption>
-      <thead>
-        <tr>
-          {sortHeader(t.table.name, "name")}
-          <th scope="col" className={cellClass}>
-            {t.table.domain}
-          </th>
-          <th scope="col" className={cellClass}>
-            {t.table.status}
-          </th>
-          {sortHeader(t.table.created, "created_at")}
-        </tr>
-      </thead>
-      <tbody>{renderBody()}</tbody>
-    </table>
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm" aria-busy={isFetching}>
+        <caption className="sr-only">{t.companies.title}</caption>
+        <thead>
+          <tr>
+            {sortHeader(t.table.name, "name")}
+            <th scope="col" className={cellClass}>
+              {t.table.domain}
+            </th>
+            <th scope="col" className={cellClass}>
+              {t.table.status}
+            </th>
+            {sortHeader(t.table.created, "created_at")}
+          </tr>
+        </thead>
+        <tbody>{renderBody()}</tbody>
+      </table>
+    </div>
   );
 }
