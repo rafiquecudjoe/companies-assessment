@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import { I18nProvider } from "@/lib/i18n/i18n-provider";
+import { LOCALE_COOKIE, parseLocale } from "@/lib/i18n/locale";
+import { LocaleToggle } from "@/lib/i18n/locale-toggle";
 import { Providers } from "./providers";
 
 const geistSans = Geist({
@@ -18,13 +23,22 @@ export const metadata: Metadata = {
   description: "Companies list and editor",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const cookieStore = await cookies();
+  const locale = parseLocale(cookieStore.get(LOCALE_COOKIE)?.value);
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col"><Providers>{children}</Providers></body>
+      <body className="min-h-full flex flex-col">
+        <I18nProvider locale={locale} dictionary={getDictionary(locale)}>
+          <header className="flex justify-end p-4">
+            <LocaleToggle />
+          </header>
+          <Providers>{children}</Providers>
+        </I18nProvider>
+      </body>
     </html>
   );
 }

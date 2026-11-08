@@ -1,0 +1,73 @@
+import type { Dictionary } from "./dictionary";
+
+export const nl = {
+  appName: "Bedrijven",
+  language: "Taal",
+  signIn: {
+    title: "Inloggen",
+    tokenLabel: "Toegangstoken",
+    submit: "Inloggen",
+  },
+  companies: {
+    title: "Bedrijven",
+    searchLabel: "Bedrijven zoeken",
+    statusFilterLabel: "Status",
+    allStatuses: "Alle statussen",
+    sortLabel: "Sorteren op",
+    newCompany: "Nieuw bedrijf",
+    loadError: "Bedrijven laden is mislukt.",
+    retry: "Opnieuw proberen",
+    empty: "Geen bedrijven gevonden met deze filters.",
+  },
+  sort: {
+    name: "Naam (A-Z)",
+    "-name": "Naam (Z-A)",
+    created_at: "Oudste eerst",
+    "-created_at": "Nieuwste eerst",
+  },
+  status: {
+    new: "Nieuw",
+    researching: "In onderzoek",
+    contacted: "Gecontacteerd",
+    qualified: "Gekwalificeerd",
+    rejected: "Afgewezen",
+  },
+  table: {
+    name: "Naam",
+    domain: "Domein",
+    status: "Status",
+    created: "Aangemaakt",
+    updated: "Bijgewerkt",
+    edit: "{name} bewerken",
+    noDomain: "Geen",
+  },
+  pagination: {
+    label: "Paginering",
+    summary: "{from}-{to} van {total}",
+    previous: "Vorige",
+    next: "Volgende",
+  },
+  drawer: {
+    createTitle: "Nieuw bedrijf",
+    editTitle: "Bedrijf bewerken",
+    close: "Sluiten",
+    save: "Opslaan",
+    saving: "Opslaan...",
+    saved: "Bedrijf opgeslagen.",
+    created: "Bedrijf aangemaakt.",
+    nameLabel: "Naam",
+    domainLabel: "Domein",
+    statusLabel: "Status",
+    loadError: "Dit bedrijf laden is mislukt.",
+    notFound: "Dit bedrijf bestaat niet.",
+    saveError: "Opslaan is mislukt. Probeer het opnieuw.",
+    validationSummary: "Corrigeer de gemarkeerde velden.",
+    nameRequired: "Naam is verplicht",
+  },
+  conflict: {
+    message:
+      "Iemand anders heeft dit bedrijf gewijzigd. Je invoer blijft bewaard.",
+    loadLatest: "Laatste versie laden",
+    latestSaved: "Laatst opgeslagen: {value}",
+  },
+} satisfies Dictionary;

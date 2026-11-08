@@ -1,6 +1,11 @@
 "use client";
 
-import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useState, type ReactNode } from "react";
 import { ApiError } from "@/lib/api/errors";
@@ -14,7 +19,9 @@ function isClientError(error: unknown): boolean {
 function redirectOnUnauthorized(error: unknown): void {
   if (!(error instanceof ApiError) || error.status !== 401) return;
   clearToken();
-  window.location.assign(signInPath(window.location.pathname + window.location.search));
+  window.location.assign(
+    signInPath(window.location.pathname + window.location.search),
+  );
 }
 
 function createQueryClient(): QueryClient {
@@ -22,7 +29,10 @@ function createQueryClient(): QueryClient {
     queryCache: new QueryCache({ onError: redirectOnUnauthorized }),
     mutationCache: new MutationCache({ onError: redirectOnUnauthorized }),
     defaultOptions: {
-      queries: { retry: (failureCount, error) => !isClientError(error) && failureCount < 2 },
+      queries: {
+        retry: (failureCount, error) =>
+          !isClientError(error) && failureCount < 2,
+      },
       mutations: { retry: false },
     },
   });

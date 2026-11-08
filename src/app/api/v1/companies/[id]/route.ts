@@ -1,5 +1,10 @@
 import { updateCompanySchema } from "@/lib/api/schemas";
-import { errorResponse, handleApi, readJsonBody, validationErrorResponse } from "@/server/companies/http";
+import {
+  errorResponse,
+  handleApi,
+  readJsonBody,
+  validationErrorResponse,
+} from "@/server/companies/http";
 import { findCompany, updateCompany } from "@/server/companies/store";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -7,7 +12,9 @@ type RouteContext = { params: Promise<{ id: string }> };
 export function GET(request: Request, { params }: RouteContext) {
   return handleApi(request, async () => {
     const company = findCompany((await params).id);
-    return company ? Response.json(company) : errorResponse(404, "Company not found");
+    return company
+      ? Response.json(company)
+      : errorResponse(404, "Company not found");
   });
 }
 
@@ -19,7 +26,8 @@ export function PATCH(request: Request, { params }: RouteContext) {
     const parsed = updateCompanySchema.safeParse(await readJsonBody(request));
     if (!parsed.success) return validationErrorResponse(parsed.error);
     const { if_version, ...changes } = parsed.data;
-    if (if_version !== company.version) return errorResponse(409, "Company was changed by someone else");
+    if (if_version !== company.version)
+      return errorResponse(409, "Company was changed by someone else");
     return Response.json(updateCompany(company, changes));
   });
 }
