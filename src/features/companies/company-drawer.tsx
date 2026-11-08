@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useRef } from "react";
+import { useCallback, useId, useRef, type SyntheticEvent } from "react";
 import { useI18n } from "@/lib/i18n/i18n-provider";
 import { CompanyForm } from "./company-form";
 import { EditCompany } from "./edit-company";
@@ -38,7 +38,9 @@ export function CompanyDrawer({ companyId, onClose, onCreated }: Props) {
     };
   }, []);
 
-  function handleClose() {
+  function handleClose(event: SyntheticEvent<HTMLDialogElement>) {
+    // Strict Mode remounts the dialog; its queued close event arrives after the reopen.
+    if (event.currentTarget.open) return;
     focusHeadingIfNothingFocused();
     onClose();
   }
