@@ -136,7 +136,9 @@ export function CompaniesTable({
             {t.status[company.status]}
           </span>
         </td>
-        <td className={`${cellClass} whitespace-nowrap tabular-nums text-muted`}>
+        <td
+          className={`${cellClass} whitespace-nowrap tabular-nums text-muted`}
+        >
           {formatDate(company.created_at)}
         </td>
       </tr>
