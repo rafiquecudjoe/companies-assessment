@@ -1,3 +1,5 @@
+// Hand-written in the shape of OpenAPI-generated TanStack Query helpers.
+
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { LIST_DEFAULTS } from "../schemas";
 import {

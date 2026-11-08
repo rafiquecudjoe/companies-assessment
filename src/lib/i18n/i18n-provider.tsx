@@ -2,13 +2,12 @@
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 import type { Dictionary } from "./dictionary";
-import { formatDate, interpolate } from "./format";
+import { formatDate } from "./format";
 import type { Locale } from "./locale";
 
 type I18n = {
   locale: Locale;
   t: Dictionary;
-  format: typeof interpolate;
   formatDate: (iso: string) => string;
 };
 
@@ -27,7 +26,6 @@ export function I18nProvider({
     () => ({
       locale,
       t: dictionary,
-      format: interpolate,
       formatDate: (iso) => formatDate(iso, locale),
     }),
     [locale, dictionary],

@@ -22,7 +22,7 @@ export const LIST_DEFAULTS = {
   sort: "-created_at",
 } as const;
 
-export const companyStatusSchema = z.enum(COMPANY_STATUSES);
+const companyStatusSchema = z.enum(COMPANY_STATUSES);
 
 const nameSchema = z.string().trim().min(1, "Name is required");
 const domainSchema = z

@@ -11,6 +11,7 @@ import {
 import { ApiError, fieldErrors } from "@/lib/api/errors";
 import { COMPANY_STATUSES, createCompanySchema } from "@/lib/api/schemas";
 import type { Company, CompanyStatus } from "@/lib/api/types.gen";
+import { interpolate } from "@/lib/i18n/format";
 import { useI18n } from "@/lib/i18n/i18n-provider";
 import { FormField } from "./form-field";
 
@@ -48,7 +49,7 @@ function draftFrom(company: Company): Draft {
 }
 
 export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
-  const { t, format } = useI18n();
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const idPrefix = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -99,6 +100,7 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
   function handleSaveError(error: Error) {
     if (error instanceof ApiError && error.status === 409) {
       setConflict(true);
+      invalidateLists();
       return;
     }
     const apiErrors = fieldErrors(error);
@@ -163,7 +165,9 @@ export function CompanyForm({ company, onCreated, onLoadLatest }: Props) {
   const isSaving = save.isPending || create.isPending;
   const changed = latest ? changedFields(draft, latest) : null;
   const latestHint = (field: keyof Draft, value: string) =>
-    changed?.[field] ? format(t.conflict.latestSaved, { value }) : undefined;
+    changed?.[field]
+      ? interpolate(t.conflict.latestSaved, { value })
+      : undefined;
   const hasFieldErrors = Object.keys(errors).length > 0;
 
   return (

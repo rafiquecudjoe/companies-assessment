@@ -1,5 +1,6 @@
 "use client";
 
+import { interpolate } from "@/lib/i18n/format";
 import { useI18n } from "@/lib/i18n/i18n-provider";
 
 type Props = {
@@ -12,7 +13,7 @@ type Props = {
 const buttonClass = "btn";
 
 export function Pagination({ page, pageSize, total, onPage }: Props) {
-  const { t, format } = useI18n();
+  const { t } = useI18n();
   const offset = (page - 1) * pageSize;
   // A hand-edited page past the end shows "0 to 0" instead of "1961 to 40".
   const from = offset >= total ? 0 : offset + 1;
@@ -23,7 +24,7 @@ export function Pagination({ page, pageSize, total, onPage }: Props) {
       className="flex items-center justify-between gap-4"
     >
       <p className="text-sm tabular-nums text-muted">
-        {format(t.pagination.summary, { from, to, total })}
+        {interpolate(t.pagination.summary, { from, to, total })}
       </p>
       <div className="flex gap-2">
         <button

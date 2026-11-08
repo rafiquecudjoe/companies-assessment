@@ -1,3 +1,5 @@
+// Hand-written in the shape of an OpenAPI-generated SDK.
+
 import { ApiError } from "./errors";
 import { getToken } from "./token-store";
 import type {
