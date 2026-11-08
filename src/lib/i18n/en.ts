@@ -56,6 +56,7 @@ export const en = {
     nameLabel: "Name",
     domainLabel: "Domain",
     statusLabel: "Status",
+    loading: "Loading company...",
     loadError: "Could not load this company.",
     notFound: "This company does not exist.",
     saveError: "Could not save. Try again.",

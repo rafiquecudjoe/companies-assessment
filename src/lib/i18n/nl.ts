@@ -58,6 +58,7 @@ export const nl = {
     nameLabel: "Naam",
     domainLabel: "Domein",
     statusLabel: "Status",
+    loading: "Bedrijf laden...",
     loadError: "Dit bedrijf laden is mislukt.",
     notFound: "Dit bedrijf bestaat niet.",
     saveError: "Opslaan is mislukt. Probeer het opnieuw.",

@@ -4,6 +4,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { LIST_DEFAULTS } from "@/lib/api/schemas";
 import { listCompaniesOptions } from "@/lib/api/@tanstack/react-query.gen";
 import { useI18n } from "@/lib/i18n/i18n-provider";
+import { CompanyDrawer, PAGE_HEADING_ID } from "./company-drawer";
 import { CompaniesTable } from "./companies-table";
 import { FiltersBar } from "./filters-bar";
 import { Pagination } from "./pagination";
@@ -37,7 +38,9 @@ export function CompaniesView() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t.companies.title}</h1>
+      <h1 id={PAGE_HEADING_ID} tabIndex={-1} className="text-2xl font-semibold">
+        {t.companies.title}
+      </h1>
       <FiltersBar
         q={params.q}
         status={params.status}
@@ -65,6 +68,7 @@ export function CompaniesView() {
           onPage={params.setPage}
         />
       )}
+      <CompanyDrawer companyId={params.company} onClose={params.closeCompany} />
     </div>
   );
 }
