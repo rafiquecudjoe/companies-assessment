@@ -9,7 +9,12 @@ import {
 describe("query keys", () => {
   it("shares one entry between empty params and explicit defaults", () => {
     expect(listCompaniesQueryKey({})).toEqual(
-      listCompaniesQueryKey({ limit: 20, offset: 0, q: " ", sort: "-created_at" }),
+      listCompaniesQueryKey({
+        limit: 20,
+        offset: 0,
+        q: " ",
+        sort: "-created_at",
+      }),
     );
   });
 
@@ -31,6 +36,8 @@ describe("query keys", () => {
   });
 
   it("uses the same key in the options helper", () => {
-    expect(listCompaniesOptions({ q: "x" }).queryKey).toEqual(listCompaniesQueryKey({ q: "x" }));
+    expect(listCompaniesOptions({ q: "x" }).queryKey).toEqual(
+      listCompaniesQueryKey({ q: "x" }),
+    );
   });
 });

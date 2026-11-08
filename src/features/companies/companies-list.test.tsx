@@ -24,9 +24,13 @@ describe("companies list", () => {
     await userEvent.type(screen.getByLabelText("Search companies"), "fjord");
 
     await vi.waitFor(() => expect(bodyRows()).toHaveLength(5));
-    expect(bodyRows().every((row) => /Fjord/.test(row.textContent ?? ""))).toBe(true);
+    expect(bodyRows().every((row) => /Fjord/.test(row.textContent ?? ""))).toBe(
+      true,
+    );
     expect(onUrlUpdate).toHaveBeenLastCalledWith(
-      expect.objectContaining({ queryString: expect.stringContaining("q=fjord") }),
+      expect.objectContaining({
+        queryString: expect.stringContaining("q=fjord"),
+      }),
     );
   });
 
@@ -39,7 +43,9 @@ describe("companies list", () => {
 
     await screen.findAllByText("1-8 of 8");
     expect(bodyRows()).toHaveLength(8);
-    const { queryString } = onUrlUpdate.mock.lastCall?.[0] ?? { queryString: "" };
+    const { queryString } = onUrlUpdate.mock.lastCall?.[0] ?? {
+      queryString: "",
+    };
     expect(queryString).toContain("status=qualified");
     expect(queryString).not.toContain("page=");
   });
@@ -57,6 +63,8 @@ describe("companies list", () => {
 
   it("shows the empty state when nothing matches", async () => {
     renderCompanies("?q=zzzz");
-    expect(await screen.findByText("No companies match your filters.")).toBeInTheDocument();
+    expect(
+      await screen.findByText("No companies match your filters."),
+    ).toBeInTheDocument();
   });
 });

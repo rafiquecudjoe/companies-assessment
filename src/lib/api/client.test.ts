@@ -2,7 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { resetCompanies } from "@/server/companies/store";
 import { stubApiFetch } from "@/test/api-fetch";
 import { ApiError, fieldErrors } from "./errors";
-import { createCompany, getCompany, listCompanies, updateCompany } from "./sdk.gen";
+import {
+  createCompany,
+  getCompany,
+  listCompanies,
+  updateCompany,
+} from "./sdk.gen";
 import { clearToken, setToken } from "./token-store";
 
 async function catchError(promise: Promise<unknown>): Promise<unknown> {
@@ -35,15 +40,22 @@ describe("client", () => {
   it("throws ApiError 401 without a token", async () => {
     stubApiFetch();
     clearToken();
-    expect(await catchError(getCompany("company-01"))).toMatchObject({ status: 401 });
+    expect(await catchError(getCompany("company-01"))).toMatchObject({
+      status: 401,
+    });
   });
 
   it("throws ApiError 409 on a stale version", async () => {
     stubApiFetch();
     await updateCompany("company-01", { if_version: 1, name: "First" });
-    const error = await catchError(updateCompany("company-01", { if_version: 1, name: "Second" }));
+    const error = await catchError(
+      updateCompany("company-01", { if_version: 1, name: "Second" }),
+    );
     expect(error).toBeInstanceOf(ApiError);
-    expect(error).toMatchObject({ status: 409, body: { detail: expect.any(String) } });
+    expect(error).toMatchObject({
+      status: 409,
+      body: { detail: expect.any(String) },
+    });
   });
 
   it("maps a 422 to field errors", async () => {

@@ -19,7 +19,11 @@ export function errorResponse(status: number, detail: string): Response {
 
 // FastAPI's 422 shape.
 export function validationErrorResponse(error: ZodError): Response {
-  const detail = error.issues.map((issue) => ({ loc: ["body", ...issue.path], msg: issue.message, type: issue.code }));
+  const detail = error.issues.map((issue) => ({
+    loc: ["body", ...issue.path],
+    msg: issue.message,
+    type: issue.code,
+  }));
   return Response.json({ detail }, { status: 422 });
 }
 
@@ -28,7 +32,10 @@ export async function readJsonBody(request: Request): Promise<unknown> {
   return request.json().catch(() => undefined);
 }
 
-export async function handleApi(request: Request, run: () => Response | Promise<Response>): Promise<Response> {
+export async function handleApi(
+  request: Request,
+  run: () => Response | Promise<Response>,
+): Promise<Response> {
   await simulateLatency();
   if (!hasBearerToken(request)) return errorResponse(401, "Not authenticated");
   return run();

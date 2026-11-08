@@ -2,10 +2,25 @@ import { z } from "zod";
 
 // One set of rules for the route handlers and the form.
 
-export const COMPANY_STATUSES = ["new", "researching", "contacted", "qualified", "rejected"] as const;
-export const COMPANY_SORTS = ["name", "-name", "created_at", "-created_at"] as const;
+export const COMPANY_STATUSES = [
+  "new",
+  "researching",
+  "contacted",
+  "qualified",
+  "rejected",
+] as const;
+export const COMPANY_SORTS = [
+  "name",
+  "-name",
+  "created_at",
+  "-created_at",
+] as const;
 
-export const LIST_DEFAULTS = { limit: 20, offset: 0, sort: "-created_at" } as const;
+export const LIST_DEFAULTS = {
+  limit: 20,
+  offset: 0,
+  sort: "-created_at",
+} as const;
 
 export const companyStatusSchema = z.enum(COMPANY_STATUSES);
 

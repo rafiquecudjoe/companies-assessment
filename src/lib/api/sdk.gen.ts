@@ -23,7 +23,11 @@ function buildQueryString(params: ListCompaniesParams): string {
 
 async function request<Response>(
   path: string,
-  { method = "GET", body, signal }: RequestOptions & { method?: string; body?: unknown } = {},
+  {
+    method = "GET",
+    body,
+    signal,
+  }: RequestOptions & { method?: string; body?: unknown } = {},
 ): Promise<Response> {
   const token = getToken();
   const response = await fetch(path, {
@@ -35,22 +39,43 @@ async function request<Response>(
     },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  if (!response.ok) throw new ApiError(response.status, await response.json().catch(() => null));
+  if (!response.ok)
+    throw new ApiError(
+      response.status,
+      await response.json().catch(() => null),
+    );
   return (await response.json()) as Response;
 }
 
-export function listCompanies(params: ListCompaniesParams = {}, options: RequestOptions = {}) {
-  return request<CompanyList>(`${BASE_PATH}${buildQueryString(params)}`, options);
+export function listCompanies(
+  params: ListCompaniesParams = {},
+  options: RequestOptions = {},
+) {
+  return request<CompanyList>(
+    `${BASE_PATH}${buildQueryString(params)}`,
+    options,
+  );
 }
 
 export function getCompany(id: string, options: RequestOptions = {}) {
   return request<Company>(`${BASE_PATH}/${encodeURIComponent(id)}`, options);
 }
 
-export function createCompany(body: CreateCompanyBody, options: RequestOptions = {}) {
+export function createCompany(
+  body: CreateCompanyBody,
+  options: RequestOptions = {},
+) {
   return request<Company>(BASE_PATH, { ...options, method: "POST", body });
 }
 
-export function updateCompany(id: string, body: UpdateCompanyBody, options: RequestOptions = {}) {
-  return request<Company>(`${BASE_PATH}/${encodeURIComponent(id)}`, { ...options, method: "PATCH", body });
+export function updateCompany(
+  id: string,
+  body: UpdateCompanyBody,
+  options: RequestOptions = {},
+) {
+  return request<Company>(`${BASE_PATH}/${encodeURIComponent(id)}`, {
+    ...options,
+    method: "PATCH",
+    body,
+  });
 }

@@ -1,6 +1,7 @@
 // Hand-written in the shape of an OpenAPI-generated types file.
 
-export type CompanyStatus = "new" | "researching" | "contacted" | "qualified" | "rejected";
+export type CompanyStatus =
+  "new" | "researching" | "contacted" | "qualified" | "rejected";
 
 export type CompanySort = "name" | "-name" | "created_at" | "-created_at";
 

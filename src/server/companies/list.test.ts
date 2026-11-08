@@ -23,21 +23,32 @@ describe("listCompanies", () => {
   it("searches name and domain, ignoring case", () => {
     const result = listCompanies(all, parse({ q: "ACME-" }));
     expect(result.total).toBeGreaterThan(0);
-    expect(result.items.every((company) => company.domain?.includes("acme-"))).toBe(true);
+    expect(
+      result.items.every((company) => company.domain?.includes("acme-")),
+    ).toBe(true);
   });
 
   it("filters by status", () => {
-    const result = listCompanies(all, parse({ status: "qualified", limit: "100" }));
-    expect(result.items.every((company) => company.status === "qualified")).toBe(true);
+    const result = listCompanies(
+      all,
+      parse({ status: "qualified", limit: "100" }),
+    );
+    expect(
+      result.items.every((company) => company.status === "qualified"),
+    ).toBe(true);
   });
 
   it("sorts by name descending", () => {
-    const names = listCompanies(all, parse({ sort: "-name" })).items.map((company) => company.name);
+    const names = listCompanies(all, parse({ sort: "-name" })).items.map(
+      (company) => company.name,
+    );
     expect(names).toEqual([...names].sort((a, b) => b.localeCompare(a)));
   });
 
   it("falls back to defaults on bad params", () => {
-    expect(parse({ limit: "abc", offset: "-3", status: "nope", sort: "x" })).toEqual({
+    expect(
+      parse({ limit: "abc", offset: "-3", status: "nope", sort: "x" }),
+    ).toEqual({
       limit: 20,
       offset: 0,
       q: "",

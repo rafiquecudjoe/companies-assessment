@@ -2,14 +2,20 @@ import type { Company, CompanyStatus } from "@/lib/api/types.gen";
 import { buildSeedCompanies } from "./seed";
 
 // On globalThis so dev hot reloads keep the data.
-const globalStore = globalThis as typeof globalThis & { __companies?: Company[] };
+const globalStore = globalThis as typeof globalThis & {
+  __companies?: Company[];
+};
 
 function companies(): Company[] {
   globalStore.__companies ??= buildSeedCompanies();
   return globalStore.__companies;
 }
 
-type CompanyChanges = { name?: string; domain?: string | null; status?: CompanyStatus };
+type CompanyChanges = {
+  name?: string;
+  domain?: string | null;
+  status?: CompanyStatus;
+};
 
 export function getAllCompanies(): readonly Company[] {
   return companies();
@@ -19,7 +25,11 @@ export function findCompany(id: string): Company | undefined {
   return companies().find((company) => company.id === id);
 }
 
-export function createCompany(input: { name: string; domain?: string | null; status?: CompanyStatus }): Company {
+export function createCompany(input: {
+  name: string;
+  domain?: string | null;
+  status?: CompanyStatus;
+}): Company {
   const now = new Date().toISOString();
   const company: Company = {
     id: crypto.randomUUID(),
@@ -34,7 +44,10 @@ export function createCompany(input: { name: string; domain?: string | null; sta
   return company;
 }
 
-export function updateCompany(existing: Company, changes: CompanyChanges): Company {
+export function updateCompany(
+  existing: Company,
+  changes: CompanyChanges,
+): Company {
   const updated: Company = {
     ...existing,
     ...changes,

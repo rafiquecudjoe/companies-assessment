@@ -11,7 +11,12 @@ export class ApiError extends Error {
 }
 
 const validationBodySchema = z.object({
-  detail: z.array(z.object({ loc: z.array(z.union([z.string(), z.number()])), msg: z.string() })),
+  detail: z.array(
+    z.object({
+      loc: z.array(z.union([z.string(), z.number()])),
+      msg: z.string(),
+    }),
+  ),
 });
 
 // Maps a 422 body to { field: message }; the first message per field wins.
