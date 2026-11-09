@@ -57,6 +57,28 @@ describe("company drawer", () => {
     expect(findCompany(COMPANY_ID)).toMatchObject({ name: "Mine", version: 3 });
   });
 
+  it("keeps the draft and shows an error when Load latest fails", async () => {
+    const name = await openDrawer();
+    const stored = findCompany(COMPANY_ID);
+    if (!stored) throw new Error("seed company missing");
+    updateCompany(stored, { name: "Other" });
+
+    await userEvent.clear(name);
+    await userEvent.type(name, "Mine");
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await screen.findByText(/Someone else changed this company/);
+
+    fetchSpy.mockImplementation(async (input, init) =>
+      !init?.method || init.method === "GET"
+        ? Response.json({ detail: "boom" }, { status: 500 })
+        : apiFetch(input, init),
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Load latest" }));
+
+    expect(await screen.findByText("Could not save. Try again.")).toBeInTheDocument();
+    expect(screen.getByLabelText("Name")).toHaveValue("Mine");
+  });
+
   it("closes the dialog when the drawer is removed without close()", async () => {
     const closeSpy = vi.spyOn(HTMLDialogElement.prototype, "close");
     const { unmount } = renderCompanies(`?company=${COMPANY_ID}`);

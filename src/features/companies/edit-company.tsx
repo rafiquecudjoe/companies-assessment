@@ -16,7 +16,8 @@ export function EditCompany({ id }: { id: string }) {
         {t.drawer.loading}
       </p>
     );
-  if (error) {
+  // A failed refetch keeps `data`; only show the error when there is nothing to edit.
+  if (data === undefined) {
     const missing = error instanceof ApiError && error.status === 404;
     return (
       <div role="alert" className="flex flex-col items-start gap-2">
