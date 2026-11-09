@@ -8,18 +8,11 @@ A Companies list with a detail/create drawer on Next.js 16, backed by an in-memo
 - `pnpm dev`, open `/`, sign in with any token
 - Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`
 
-## Versions (installed)
-
-Next 16.4.5, React 19.3.0, TanStack Query 5.107.1, nuqs 2.10.2.
-
 ## Structure
 
-- `src/app`: layout, providers, sign-in, `/companies`, `api/v1/companies` route handlers
-- `src/server/companies`: store (40 seeded), pure list logic, HTTP helpers (auth, delay, FastAPI-style errors)
-- `src/lib/api`: typed client in hey-api's generated shape (`types.gen`, `sdk.gen`, `@tanstack/react-query.gen`), shared zod schemas, `ApiError`, token store
-- `src/lib/i18n`: typed `en`/`nl` dictionaries, locale cookie, date formatting
-- `src/features/companies`: table, filters, pagination, drawer, form
 - `features/` reaches the API only through `lib/api`
+- `lib/api/*.gen` files follow hey-api's generated shape but are written by hand, not generated
+- `server/companies` is the fake backend: the route handlers in `app/api` call it, and tests reuse those handlers
 
 ## Decisions
 
