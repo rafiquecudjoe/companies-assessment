@@ -52,7 +52,7 @@
 - Measure first, in the field if I can: LCP, INP and CLS (Web Vitals), plus TTFB. Then use the Network and Performance panels and the React Profiler to find where the time goes: server, network, bundle size or rendering.
 - Two features to improve a data-heavy page:
   - Streaming with Suspense, so the shell and fast parts render while slow data loads.
-  - Server prefetch with `HydrationBoundary`, or caching with `"use cache"`, so the first paint has data without a client round trip.
+  - Server prefetch with `HydrationBoundary`, so the first paint has data without a client round trip.
 - Others: `next/dynamic` for heavy client code, and pagination or virtualisation for long lists.
 
 ## 9. Testing approach
